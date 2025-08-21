@@ -1,0 +1,10 @@
+service_line,hours_available
+Janitorial,200
+Construction,120
+IT,80
+Logistics,60
+Safety/Fire,40
+Medical,50
+Education,70
+Aviation,30
+Other,40
