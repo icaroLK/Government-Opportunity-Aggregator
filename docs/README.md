@@ -322,8 +322,8 @@ Update the badge at the top of this README to point to your repo:
 
 ## Loom & Demo
 
-* **Public Interface:** see `demo_url.txt` or open [https://airtable.com/appWUC1bwghJqFCxS/shr5Mxeep7Gw2K8Gx](https://airtable.com/appWUC1bwghJqFCxS/shr5Mxeep7Gw2K8Gx)
-* **Loom walkthrough:** see `loom_link.txt` (≤8 min; happy‑path + quick failure‑recovery clip)
+* **Public Interface:** see `demo_url.txt` or open [Interface Airtable](https://airtable.com/appWUC1bwghJqFCxS/shr5Mxeep7Gw2K8Gx)
+* **Loom walkthrough:** see `loom_link.txt` or open [Loom video](https://www.loom.com/share/b8cba89954d74ee0a7232015a56b0703?sid=1bcbcf61-2de7-4c95-9779-42489e993843)
 
 ---
 
