@@ -2,3 +2,4 @@ __pycache__/
 .env
 *.env
 n8n_data/.n8n/
+n8n_data/.n8n/
