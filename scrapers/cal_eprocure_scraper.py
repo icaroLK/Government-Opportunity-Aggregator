@@ -6,25 +6,50 @@ import sys
 from datetime import datetime
 from playwright.async_api import async_playwright
 
+# File path where raw results can be written if needed
 OUTPUT_FILE = "./cal_latest.json"
 
 
 async def main():
+    qtd = int(os.getenv("SCRAPE_CAL_QTY", "20"))         # <-- from env
+    headless = os.getenv("HEADLESS", "True") == "True"
+    """
+    Scraper for Cal eProcure opportunities.
+
+    Flow:
+      1. Launch a headless Chromium browser using Playwright.
+      2. Navigate to the Cal eProcure event search page.
+      3. Wait for the data table with event rows to load.
+      4. Extract relevant fields for the first N rows (event_id, name, dept, deadline, status).
+      5. Map department names to internal numeric IDs to build official event links.
+      6. Output the list of opportunities as JSON to stdout.
+
+    This scraper is used as one of the two required data sources for the aggregator
+    (Cal eProcure + SAM.gov) as described in the assignment.
+    """
+
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        # Launch Chromium in headless mode (no visible UI)
+        browser = await p.chromium.launch(headless=headless)
         print("Abrindo", file=sys.stderr)
+
+        # Open a new browser page
         page = await browser.new_page()
+
+        # Navigate to Cal eProcure event search page
         await page.goto("https://caleprocure.ca.gov/pages/Events-BS3/event-search.aspx", timeout=60000)
         print("✅ Página carregada com sucesso", file=sys.stderr)
 
+        # Wait until the table with data rows is fully available
         print("Carregando tabela com dados", file=sys.stderr)
         await page.wait_for_selector("#datatable-ready tbody tr")
         
-
-        # Pega todas as linhas
+        # Extract all rows from the table body
         print("Pegando as linhas", file=sys.stderr)
         rows = await page.query_selector_all("#datatable-ready tbody tr")
 
+        # Mapping of department display names → internal numeric codes.
+        # Used to construct valid event detail links.
         department_map = {
             "Business & Economic Developmnt": "509",
             "Ofc Technology and Solutions I": "531",
@@ -92,24 +117,28 @@ async def main():
             "32nd DAA -Costa Mesa": "SS246",
         }
 
-        qtd = 20
+        # Limit: number of rows to scrape (configurable)
 
         opportunities = []
+        # Loop through first N rows and extract event details
         for row in rows[:qtd]:
             event_id = await row.query_selector("[data-if-label='tdEventId']")
             event_name = await row.query_selector("[data-if-label='tdEventName']")
             dep_name = await row.query_selector("[data-if-label='tdDepName']")
             end_date = await row.query_selector("[data-if-label='tdEndDate']")
             status = await row.query_selector("[data-if-label='tdStatus']")
+
+            # Clean text values (strip whitespace) if elements exist
             department = (await dep_name.inner_text()).strip() if dep_name else None
             evnt_id = (await event_id.inner_text()).strip() if event_id else None
 
-
+            # Map department to numeric ID, default "undefined" if not in dictionary
             dep_id = department_map.get(department, "undefined")
-            link = f"https://caleprocure.ca.gov/event/{dep_id}/{evnt_id}"
-            #print(link)
-            
 
+            # Construct official event link using dep_id and evnt_id
+            link = f"https://caleprocure.ca.gov/event/{dep_id}/{evnt_id}"
+            
+            # Build opportunity record
             opportunity = {
                 "event_id": (await event_id.inner_text()).strip() if event_id else None,
                 "event_name": (await event_name.inner_text()).strip() if event_name else None,
@@ -120,13 +149,14 @@ async def main():
             }
             opportunities.append(opportunity)
 
-        # print("🔎 Primeiras oportunidades extraídas:")
-        # for opp in opportunities:
-        #     print(opp)
-
+        # Output the final list of extracted opportunities as JSON
         print(json.dumps(opportunities))
 
+        # Gracefully close the browser
         await browser.close()
 
+
 if __name__ == "__main__":
+    # Run the scraper asynchronously when called directly
     asyncio.run(main())
+

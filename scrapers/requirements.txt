@@ -1,2 +1,5 @@
 playwright==1.54.0
 pytz
+pytest
+pytest-cov
+pytest-asyncio

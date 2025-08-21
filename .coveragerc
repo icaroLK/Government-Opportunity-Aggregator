@@ -1,0 +1,13 @@
+[run]
+branch = True
+source =
+    scrapers
+omit =
+    */scrapers/*_scraper.py
+    scrapers/*_scraper.py
+    scrapers/cal_eprocure_scraper.py
+    scrapers/lacobids_scraper.py
+
+[report]
+show_missing = True
+skip_covered = True

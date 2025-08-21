@@ -4,21 +4,23 @@ services:
       context: .
       dockerfile: n8n.Dockerfile
     container_name: gov-n8n
-    user: root                    # garante acesso ao /var/run/docker.sock
+    user: root
     ports:
-      - "5897:5678"
+      - "${N8N_PORT:-5678}:5678"
     environment:
-      - GENERIC_TIMEZONE=America/Sao_Paulo
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=admin
-      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE:-America/Sao_Paulo}
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE:-false}
       - N8N_USER_FOLDER=/home/node/.n8n
-      - N8N_ENCRYPTION_KEY=icaro123@
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:${N8N_PORT:-5678}/}
     volumes:
       - ./n8n_data:/home/node/.n8n
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/data
+      - ./workflows:/workflows
     depends_on:
       - scraper
     restart: unless-stopped
@@ -26,54 +28,18 @@ services:
   scraper:
     build: ./scrapers
     container_name: gov-scrapers
-    working_dir: /app
+    working_dir: /workspace
+    environment:
+      - HEADLESS=${HEADLESS:-true}
+      - SCRAPE_CAL_QTY=${SCRAPE_CAL_QTY:-20}
+      - SCRAPE_LACO_QTY=${SCRAPE_LACO_QTY:-20}
+      - SCRAPE_SAM_QTY=${SCRAPE_SAM_QTY:-20}
     volumes:
+      - .:/workspace
       - ./scrapers:/app
       - ./data:/data
+      - ./tests:/tests
+      - ./.coveragerc:/.coveragerc   # (so coverage omit rules work inside)
+      - ./pytest.ini:/pytest.ini     # (so --cov-fail-under=70 etc. apply)
     command: tail -f /dev/null
     restart: unless-stopped
-
-
-
-#services:
-#  n8n:
-#    image: n8nio/n8n
-#    container_name: gov-n8n
-#    ports:
-#      - "5897:5678"
-#    environment:
-#      - GENERIC_TIMEZONE=America/Sao_Paulo
-#      - N8N_BASIC_AUTH_ACTIVE=true
-#      - N8N_BASIC_AUTH_USER=admin
-#      - N8N_BASIC_AUTH_PASSWORD=admin
-#      - N8N_SECURE_COOKIE=false
-#    volumes:
-#      - ./n8n_data:/home/node/.n8n
-#    restart: unless-stopped
-
-#  scraper:
-#    build: ./scrapers
-#    container_name: gov-lacobids-scraper
-#    volumes:
-#      - ./data:/app/data
-#    command: tail -f /dev/null
-#    restart: unless-stopped
-
-#  scraper:
-#    build: ./scrapers
-#    image: icarolk/lacobids-scraper
-#    container_name: gov-lacobids-scraper
-#    volumes:
-#      - ./scrapers:/app
-#      - ./data:/app/data
-#    command: python lacobids_scraper.py
-
-#  app:
-#    build: .
-#    container_name: gov-scrapers
-#    volumes:
-#      - ./scrapers:/app/scrapers
-#      - ./tests:/app/tests
-#    working_dir: /app
-#    command: tail -f /dev/null
-
