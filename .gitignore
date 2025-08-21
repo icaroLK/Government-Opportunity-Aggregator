@@ -1,4 +1,4 @@
 __pycache__/
 .env
 *.env
-n8n_data/.n8n/database.sqlite
+n8n_data/.n8n/
