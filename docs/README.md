@@ -254,12 +254,36 @@ The **scoring** step aggregates fit signals (deadline proximity, category fit, e
 ````
 ---
 
-## Tests & coverage (≥70%)
-**Local (no Docker required):**
+## Tests & Coverage (≥70%)
+
+You can run the test suite in two ways: **locally with Python** or **inside Docker**.  
+Both methods will produce coverage reports (minimum 70% required).
+
+---
+
+### Option 1: Local (Python environment)
+From the repository root, create and activate a virtual environment, then install dependencies:
+
 ```bash
+python -m venv .venv
+source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```
+Run tests with coverage:
+
+```bash
 pytest -q --cov=scrapers --cov-report=term-missing
-````
+```
+Option 2: Inside Docker
+If you are already running the project via docker compose up, you can execute tests inside the scraper container without setting up Python locally:
+
+```bash
+docker exec gov-scrapers python -m pytest -q \
+  --cov=scrapers \
+  --cov-config=/workspace/.coveragerc \
+  --cov-report=term-missing \
+  /workspace/tests
+```
 
 Output shows per‑file coverage; the suite exercises normalizers and checksum idempotency.
 
@@ -267,7 +291,7 @@ Output shows per‑file coverage; the suite exercises normalizers and checksum i
 Update the badge at the top of this README to point to your repo:
 
 ```
-![Tests](https://github.com/<USER>/<REPO>/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/user/repository/actions/workflows/tests.yml/badge.svg)
 ```
 
 ---
