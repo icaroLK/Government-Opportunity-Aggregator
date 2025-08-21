@@ -1,0 +1,1632 @@
+{
+  "name": "get_opportunities",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da9d7131-1311-4720-89b9-61066af96944",
+              "name": "lista_formatada",
+              "value": "={{ $json.stdout }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        740
+      ],
+      "id": "a363b61a-512b-4fa3-a9bd-a4716dd86ea7",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "command": "=docker exec gov-scrapers python -u /app/formatter.py '{{$json.opportunities.toJsonString().base64Encode()}}' {{ $json.type }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        840,
+        740
+      ],
+      "id": "53889b72-e12e-48e4-b7a0-4f03aebd8133",
+      "name": "formatar"
+    },
+    {
+      "parameters": {
+        "command": "docker exec gov-scrapers python -u /app/lacobids_scraper.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        400,
+        940
+      ],
+      "id": "65f4e51f-f06e-4a46-a7f9-687af9ead425",
+      "name": "lacobids1"
+    },
+    {
+      "parameters": {
+        "command": "docker exec gov-scrapers python -u /app/cal_eprocure_scraper.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        400,
+        740
+      ],
+      "id": "5545457f-d87b-4472-b61f-9f36891ea221",
+      "name": "cal eprocure1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28f7266c-1310-4bc8-a432-42996a2b6872",
+              "name": "opportunities",
+              "value": "={{ $json.stdout }}",
+              "type": "array"
+            },
+            {
+              "id": "377a0401-2907-463e-be00-e3757eb17404",
+              "name": "type",
+              "value": "laco",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        940
+      ],
+      "id": "17f8fbe0-6490-44b0-8fc9-e6c284ddc715",
+      "name": "Opportunities3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28f7266c-1310-4bc8-a432-42996a2b6872",
+              "name": "opportunities",
+              "value": "={{ $json.stdout }}",
+              "type": "array"
+            },
+            {
+              "id": "2c513a3f-6e2c-46e0-ac81-6552a4f73609",
+              "name": "type",
+              "value": "cal",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        740
+      ],
+      "id": "3de31e96-8b48-4d1b-9a7c-3b92d7a6182b",
+      "name": "Opportunities4"
+    },
+    {
+      "parameters": {
+        "url": "https://api.sam.gov/prod/opportunities/v2/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "5odSpyOme61YDgHF3AOR2qHE1BKt99EhvbrcQdka"
+            },
+            {
+              "name": "postedFrom",
+              "value": "={{ $now.minus(3, 'days').format('MM/dd/yyyy') }}"
+            },
+            {
+              "name": "postedTo",
+              "value": "={{ $now.format('MM/dd/yyyy') }}"
+            },
+            {
+              "name": "limit",
+              "value": "20"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        1140
+      ],
+      "id": "9f85e4c4-155c-4207-a5f4-fe969f689fd8",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "88e35143-15f0-4062-bde6-71fb9dc4175f",
+              "name": "opportunities",
+              "value": "={{ $json.opportunitiesData }}",
+              "type": "array"
+            },
+            {
+              "id": "21204e7c-3c6b-45e0-8d90-7419f3bdd4e8",
+              "name": "type",
+              "value": "sam",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        1140
+      ],
+      "id": "033ae3bb-fba1-46b9-a8be-e25b9dc4f5af",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "command": "=docker exec gov-scrapers python -u /app/formatter.py '{{$json.opportunities.toJsonString().base64Encode()}}' {{ $json.type }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        840,
+        940
+      ],
+      "id": "714afb81-a81a-48ae-9da4-e81458354877",
+      "name": "formatar2"
+    },
+    {
+      "parameters": {
+        "command": "=docker exec gov-scrapers python -u /app/formatter.py '{{$json.opportunities.toJsonString().base64Encode()}}' {{ $json.type }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        840,
+        1140
+      ],
+      "id": "2f6fd450-5a02-4faf-b510-6690d0fe6739",
+      "name": "formatar3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da9d7131-1311-4720-89b9-61066af96944",
+              "name": "lista_formatada",
+              "value": "={{ $json.stdout }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        940
+      ],
+      "id": "d8856593-1c01-46c0-b5d4-2b981ca7193e",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da9d7131-1311-4720-89b9-61066af96944",
+              "name": "lista_formatada",
+              "value": "={{ $json.stdout }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        1140
+      ],
+      "id": "e21fb134-ce12-4f34-ba9f-b3130568f354",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1580,
+        940
+      ],
+      "id": "c117cf82-4885-4915-b41a-ee60263f91a2",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "lista_formatada",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        740
+      ],
+      "id": "6be35a9e-893c-432d-a3b3-52fc151e2335",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "lista_formatada",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        940
+      ],
+      "id": "eee79f1b-6be1-4f2d-9a40-960d7ba3f111",
+      "name": "Split Out4"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "lista_formatada",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        1140
+      ],
+      "id": "61aeafcc-7d6a-4008-afe3-513ea9c0eac6",
+      "name": "Split Out5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code Node (JavaScript)\n\nconst dateFields = ['posted_date', 'deadline', 'archive_date', 'award_date'];\nconst datetimeFields = ['created_at'];\nconst moneyFields = ['estimated_value', 'award_amount'];\n\n/** Helpers **/\nfunction toISODate(value) {\n  if (value == null || value === '') return value;\n\n  // Já está no formato YYYY-MM-DD\n  if (typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(value)) {\n    return value;\n  }\n\n  // Timestamp numérico (ms ou s)\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    const ms = value < 1e12 ? value * 1000 : value;\n    const d = new Date(ms);\n    if (!isNaN(d)) return toYMD(d);\n  }\n\n  // ISO datetime ou outras strings parseáveis pelo Date\n  if (typeof value === 'string') {\n    // Tenta formatos comuns manualmente antes do Date.parse para evitar ambiguidade\n    // MM/DD/YYYY\n    let m = value.match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/);\n    if (m) {\n      const [_, mm, dd, yyyy] = m.map(Number);\n      const d = new Date(Date.UTC(yyyy, mm - 1, dd));\n      if (!isNaN(d)) return toYMD(d);\n    }\n    // DD/MM/YYYY\n    m = value.match(/^(\\d{1,2})-(\\d{1,2})-(\\d{4})$/) || value.match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/);\n    if (m) {\n      const dd = Number(m[1]), mm = Number(m[2]), yyyy = Number(m[3]);\n      // Heurística: se dd > 12, é provavelmente DD/MM/YYYY\n      if (dd > 12) {\n        const d = new Date(Date.UTC(yyyy, mm - 1, dd));\n        if (!isNaN(d)) return toYMD(d);\n      }\n    }\n    // YYYY-MM-DDTHH:mm:ss...\n    const d2 = new Date(value);\n    if (!isNaN(d2)) return toYMD(d2);\n  }\n\n  // Se não deu para converter, retorna original sem romper o fluxo\n  return value;\n}\n\nfunction toISODatetime(value) {\n  if (value == null || value === '') return value;\n\n  // Já está ISO completo\n  if (typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}T/.test(value)) {\n    const d = new Date(value);\n    return isNaN(d) ? value : d.toISOString();\n  }\n\n  // Data simples -> usa 00:00:00Z\n  if (typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(value)) {\n    const d = new Date(value + 'T00:00:00Z');\n    return isNaN(d) ? value : d.toISOString();\n  }\n\n  // Timestamp numérico (ms ou s)\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    const ms = value < 1e12 ? value * 1000 : value;\n    const d = new Date(ms);\n    return isNaN(d) ? value : d.toISOString();\n  }\n\n  // Tenta parse genérico\n  const d2 = new Date(value);\n  return isNaN(d2) ? value : d2.toISOString();\n}\n\nfunction toYMD(dateObj) {\n  const yyyy = dateObj.getUTCFullYear();\n  const mm = String(dateObj.getUTCMonth() + 1).padStart(2, '0');\n  const dd = String(dateObj.getUTCDate()).padStart(2, '0');\n  return `${yyyy}-${mm}-${dd}`;\n}\n\nfunction toMoneyNumber(value) {\n  if (value == null || value === '') return value;\n\n  if (typeof value === 'number') return value;\n\n  if (typeof value === 'string') {\n    // remove tudo que não for dígito, ponto ou sinal\n    const cleaned = value.replace(/[^0-9.\\-]/g, '');\n    // Normaliza casos com múltiplas vírgulas/pontos (já removemos vírgulas)\n    const num = parseFloat(cleaned);\n    return Number.isFinite(num) ? num : value;\n  }\n\n  return value;\n}\n\n/** Processamento **/\nconst out = items.map(item => {\n  const d = { ...item.json };\n\n  // Datas (YYYY-MM-DD)\n  for (const f of dateFields) {\n    if (f in d) d[f] = toISODate(d[f]);\n  }\n\n  // Datetime (ISO completo)\n  for (const f of datetimeFields) {\n    if (f in d) d[f] = toISODatetime(d[f]);\n  }\n\n  // Valores monetários (número)\n  for (const f of moneyFields) {\n    if (f in d) d[f] = toMoneyNumber(d[f]);\n  }\n\n  return { json: d };\n});\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        940
+      ],
+      "id": "9e7b0959-45e1-4397-817b-27551318d249",
+      "name": "Format ISO and Money"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini-2025-04-14",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI-2025-04-14"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert US public procurement classifier. For each opportunity, infer:\n\n1. naics_code (6 digits) — fill only if confident, else null.\n2. classification_code (PSC/FSC) — fill only if confident, else null.\n3. service_line — from this fixed set only:\n   [\"Janitorial\",\"Construction\",\"IT\",\"Logistics\",\"Safety/Fire\",\"Medical\",\"Education\",\"Aviation\",\"Other\"]\n4. effort_hours — provide a rough integer estimate of the labor hours required.\n5. effort_bucket — classify based on effort_hours:\n   \"Low\" (≤50), \"Medium\" (51–200), \"High\" (>200).\n\nRules:\n- Return strict JSON with the same fields as the input.\n- Do not remove or rename any fields.\n- Only replace nulls in the fields above.\n- All dates must be strict ISO 8601 (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ).\n- No prose, no markdown, no explanations — JSON only.\n\n\nINPUT:\n\n{{$json.toJsonString()}}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2740,
+        480
+      ],
+      "id": "f92773b1-3592-4caa-8b26-d2d067505b96",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Bc2T6PuP1KeF4vLS",
+          "name": "gov-project-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const chunkSize = 15;\nconst chunks = [];\n\nfor (let i = 0; i < items.length; i += chunkSize) {\n  chunks.push({\n    json: {\n      data: items.slice(i, i + chunkSize).map(i => i.json)\n    }\n  });\n}\n\nreturn chunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        460
+      ],
+      "id": "d05bb025-8113-4560-8635-a970a9c536df",
+      "name": "lista todos"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2500,
+        460
+      ],
+      "id": "734ae64c-b819-48cf-b2ba-1edebe0257e6",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 20.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3480,
+        480
+      ],
+      "id": "9dad1571-c58f-49f9-b701-c99a9d6ab170",
+      "name": "Wait",
+      "webhookId": "e2d55272-3653-43fa-b65b-7fc7a1c1b6c6"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appWUC1bwghJqFCxS",
+          "mode": "list",
+          "cachedResultName": "Opportunities",
+          "cachedResultUrl": "https://airtable.com/appWUC1bwghJqFCxS"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblB84d75LsFjBwJI",
+          "mode": "list",
+          "cachedResultName": "Opportunities",
+          "cachedResultUrl": "https://airtable.com/appWUC1bwghJqFCxS/tblB84d75LsFjBwJI"
+        },
+        "filterByFormula": "={checksum} = \"{{ $json.hash_novos }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2280,
+        800
+      ],
+      "id": "89ef9115-3509-4e43-bc70-c21182ea54ff",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "m1O4BAbhoCNb7p9Q",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "69601fe0-7bd8-474e-9106-c8e45b27d14c",
+              "name": "hash_novos",
+              "value": "={{ $json.checksum }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2060,
+        940
+      ],
+      "id": "1538ea61-ef3c-44e1-b736-a74b091f32e4",
+      "name": "hashs1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56df3e11-e174-4868-ae7b-185f666620b2",
+              "name": "hashs_on_db",
+              "value": "={{ $json.checksum }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2480,
+        800
+      ],
+      "id": "e5e69fb3-3959-4b76-9fff-726a21746346",
+      "name": "pega os que ja existe"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "hashs_on_db",
+              "field2": "hash_novos"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2720,
+        920
+      ],
+      "id": "0dd5d964-5d19-4d24-95c3-58aed4512c29",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "checksum",
+              "field2": "hash_novos"
+            }
+          ]
+        },
+        "outputDataFrom": "input1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2080,
+        460
+      ],
+      "id": "56c34870-cd7d-477f-86a6-4d27b967b410",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3600,
+        260
+      ],
+      "id": "123a4319-1b39-4393-ae4a-dd1de9335d36",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appWUC1bwghJqFCxS",
+          "mode": "list",
+          "cachedResultName": "Opportunities",
+          "cachedResultUrl": "https://airtable.com/appWUC1bwghJqFCxS"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblB84d75LsFjBwJI",
+          "mode": "list",
+          "cachedResultName": "Opportunities",
+          "cachedResultUrl": "https://airtable.com/appWUC1bwghJqFCxS/tblB84d75LsFjBwJI"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "active": false
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "opportunity_id",
+              "displayName": "opportunity_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "solicitation_number",
+              "displayName": "solicitation_number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "agency",
+              "displayName": "agency",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "agency_code",
+              "displayName": "agency_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "deadline",
+              "displayName": "deadline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "archive_date",
+              "displayName": "archive_date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "naics_code",
+              "displayName": "naics_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "classification_code",
+              "displayName": "classification_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "service_line",
+              "displayName": "service_line",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estimated_value",
+              "displayName": "estimated_value",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "effort_hours",
+              "displayName": "effort_hours",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "effort_bucket",
+              "displayName": "effort_bucket",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "active",
+              "displayName": "active",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "decision",
+              "displayName": "decision",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Go",
+                  "value": "Go"
+                },
+                {
+                  "name": "Review",
+                  "value": "Review"
+                },
+                {
+                  "name": "No Go",
+                  "value": "No Go"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "award_date",
+              "displayName": "award_date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "award_number",
+              "displayName": "award_number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "award_amount",
+              "displayName": "award_amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "awardee_name",
+              "displayName": "awardee_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "awardee_uei",
+              "displayName": "awardee_uei",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "awardee_cage",
+              "displayName": "awardee_cage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "checksum",
+              "displayName": "checksum",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "token_cost",
+              "displayName": "token_cost",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hours_available",
+              "displayName": "hours_available",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        5140,
+        280
+      ],
+      "id": "b96b4b3e-6d2f-497b-88b8-6bcab2e766d1",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "m1O4BAbhoCNb7p9Q",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b4498524-ccf1-430e-9141-c0a67177a2c6",
+              "name": "list",
+              "value": "={{ $('Message a model').item.json.choices[0].message.content.data.toJsonString() }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2980,
+        260
+      ],
+      "id": "58375465-9387-4f97-b67c-f6098af0e74e",
+      "name": "list with naics"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/data/resource_capacity.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        440
+      ],
+      "id": "c289fe53-857f-4929-a1d9-214c317ebe0e",
+      "name": "Read/Write Files from Disk",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ",",
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        4300,
+        440
+      ],
+      "id": "3dfd0b36-3fdc-4e66-9db3-39c596b4f855",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "service_line",
+        "joinMode": "enrichInput1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4480,
+        280
+      ],
+      "id": "5f2a4b01-6030-43f0-9b3b-83e5e854f25c",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n\n  if (data.naics_code !== null && typeof data.naics_code === 'number') {\n    data.naics_code = String(data.naics_code);\n  }\n\n  return { json: data };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3840,
+        260
+      ],
+      "id": "3bfac195-b7c0-4b53-aee9-3ecdfbd2d010",
+      "name": "naics -> string"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(it => {\n  const d = it.json;\n  let score = 0;\n\n  // Decision weight\n  if (d.auto_decision === \"Go\") score += 50;\n  else if (d.auto_decision === \"Review\") score += 25;\n\n  // Effort bucket weight\n  if (d.effort_bucket === \"Low\") score += 30;\n  else if (d.effort_bucket === \"Medium\") score += 15;\n\n  // Type weight\n  const type = (d.type || \"\").toLowerCase();\n  if (type.includes(\"award notice\") || type.includes(\"combined synopsis\")) score += 20;\n  else if (type.includes(\"solicitation\")) score += 10;\n  else if (type.includes(\"sources sought\") || type.includes(\"presolicitation\")) score += 5;\n\n  // Active weight\n  if (d.active === true) score += 10;\n\n  d.score = score;\n  return { json: d };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4920,
+        280
+      ],
+      "id": "ef0f3e5c-0145-4975-b40d-6ea74f3568c5",
+      "name": "score1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "opportunities",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5400,
+        280
+      ],
+      "id": "2916855d-7c66-4353-ba0f-c2196a4fecf9",
+      "name": "Aggregate",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=opportunities",
+              "value": "={{ $json.opportunities }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5860,
+        280
+      ],
+      "id": "b9821d5c-5d8f-47ae-ae35-9174d4e41e68",
+      "name": "new_opp_alert"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(it => {\n  const d = it.json;\n  d.hours_available = Number(d.hours_available || 0);\n  const cap = d.hours_available;\n  const need = Number(d.effort_hours || 0);\n\n  // novo campo sugerido automaticamente\n  d.auto_decision = need === 0 ? \"Review\" :\n                    (need <= cap ? \"Go\" : (need <= cap*1.2 ? \"Review\" : \"No Go\"));\n\n  // campo principal sempre inicia como Review (aguarda usuário no Slack)\n  d.decision = \"Review\";\n\n  return { json: d };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4700,
+        280
+      ],
+      "id": "0c61337a-7e27-4286-adf6-9d233c68964c",
+      "name": "Auto_decision"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(({ json }) => {\n  const n8n_port = $env.N8N_PORT || '5678';\n  const base = $env.WEBHOOK_URL || `http://localhost:${n8n_port}`; // Define at .env of n8n\n  json.url = `${base}/webhook/new-opportunity`;\n  return { json };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5620,
+        280
+      ],
+      "id": "804ee80e-a3c9-414d-baf8-9dfa434c8a7c",
+      "name": "Code",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const PRICES = {\n  \"gpt-4o-mini\": { prompt: 0.003, completion: 0.006 }\n};\n\nconst model = \"gpt-4o-mini\"; \nconst price = PRICES[model];\n\nlet promptTotal = 0;\nlet completionTotal = 0;\n\nfor (const item of items) {\n  const u = item.json.usage || {};\n  promptTotal += u.prompt_tokens || 0;\n  completionTotal += u.completion_tokens || 0;\n}\n\nconst totalTokens = promptTotal + completionTotal;\nconst cost = (promptTotal/1000 * price.prompt) + \n             (completionTotal/1000 * price.completion);\n\nconsole.log(`Run completed: ${totalTokens} tokens ≈ $${cost.toFixed(4)} (model: ${model})`);\n\nreturn [\n  {\n    json: {\n      model,\n      prompt_tokens: promptTotal,\n      completion_tokens: completionTotal,\n      total_tokens: totalTokens,\n      cost_usd: Number(cost.toFixed(4))\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        480
+      ],
+      "id": "a649211e-88be-412e-b3b8-992ab1dcdf54",
+      "name": "cost_tokens"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function Node after Summarize\nconst item = items[0].json;\n\nconst totalTokens = item.total_tokens || 0;\nconst totalCost = item.cost_usd || 0;\n\nconsole.log(`Run completed: ${totalTokens} tokens ≈ $${totalCost.toFixed(4)}`);\n\nreturn [\n  {\n    json: {\n      total_tokens: totalTokens,\n      total_cost_usd: Number(totalCost.toFixed(4))\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3240,
+        480
+      ],
+      "id": "fcf64b6a-9291-4d7a-adf0-be374c7e37e4",
+      "name": "log price tokens"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 440,
+        "width": 180,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5580,
+        140
+      ],
+      "id": "8004a15e-0dc6-4906-aa45-4ab1dab9bd8e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        940
+      ],
+      "id": "722ab7c0-0906-4d04-9d2d-2ceb458282c8",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "formatar": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lacobids1": {
+      "main": [
+        [
+          {
+            "node": "Opportunities3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cal eprocure1": {
+      "main": [
+        [
+          {
+            "node": "Opportunities4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opportunities3": {
+      "main": [
+        [
+          {
+            "node": "formatar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opportunities4": {
+      "main": [
+        [
+          {
+            "node": "formatar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "formatar3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formatar2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formatar3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Format ISO and Money",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format ISO and Money": {
+      "main": [
+        [
+          {
+            "node": "hashs1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lista todos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "cost_tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "list with naics",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hashs1": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "pega os que ja existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pega os que ja existe": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "lista todos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "naics -> string",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list with naics": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Auto_decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "naics -> string": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "score1": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "new_opp_alert": {
+      "main": [
+        []
+      ]
+    },
+    "Auto_decision": {
+      "main": [
+        [
+          {
+            "node": "score1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "new_opp_alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cost_tokens": {
+      "main": [
+        [
+          {
+            "node": "log price tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log price tokens": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "cal eprocure1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "lacobids1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4d0cc3e6-d9d7-48cf-912d-fca133c0f40f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c1d0e46fdeb2b72758a6a5bd5eecf2622ff8b84a8964c8e9687c6c05c9f474b5"
+  },
+  "id": "Wk1bPrZ9Md2rGOAY",
+  "tags": []
+}

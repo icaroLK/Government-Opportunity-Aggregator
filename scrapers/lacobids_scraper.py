@@ -2,6 +2,8 @@ import asyncio
 import re
 import sys
 import json
+import os
+
 
 from playwright.async_api import async_playwright
 
@@ -11,7 +13,7 @@ OUTPUT_FILE = "./laco_latest.json"
 
 async def main():
     qtd = int(os.getenv("SCRAPE_LACO_QTY", "20"))        # <-- from env
-    headless = os.getenv("HEADLESS", "True") == "True"
+    headless = os.getenv("HEADLESS", "true").lower() == "true"
     """
     Scraper for Los Angeles County (LACo) Bids portal.
 

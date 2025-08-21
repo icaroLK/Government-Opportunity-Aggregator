@@ -1,6 +1,7 @@
 # /scrapers/cal_eprocure_scraper.py
 import asyncio
 import hashlib
+import os
 import json
 import sys
 from datetime import datetime
@@ -12,7 +13,7 @@ OUTPUT_FILE = "./cal_latest.json"
 
 async def main():
     qtd = int(os.getenv("SCRAPE_CAL_QTY", "20"))         # <-- from env
-    headless = os.getenv("HEADLESS", "True") == "True"
+    headless = os.getenv("HEADLESS", "true").lower() == "true"
     """
     Scraper for Cal eProcure opportunities.
 

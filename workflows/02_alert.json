@@ -1,0 +1,184 @@
+{
+  "name": "alert",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-opportunity",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        280,
+        -300
+      ],
+      "id": "ff93f8b5-af40-4ffe-b973-ffd6362db0ce",
+      "name": "Webhook",
+      "webhookId": "a2c4f5df-2c8d-472a-ae78-e27dff2c2689"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=body.opportunities",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -300
+      ],
+      "id": "77e7d0a7-347e-456b-9e99-e176ae3a82ab",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(({ json }) => {\n  const n8n_port = $env.N8N_PORT || '5678';\n  const base = $env.BASE_URL || `http://localhost:${n8n_port}`; // Define at .env of n8n\n  const cs = encodeURIComponent(json.fields.checksum || '');\n  json.accept_url = `${base}/webhook/decision?checksum=${cs}&decision=Go`;\n  json.ignore_url = `${base}/webhook/decision?&checksum=${cs}&decision=No%20Go`;\n  return { json };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        -300
+      ],
+      "id": "4041ade3-6249-4d18-a5c8-98e1e95ba4b2",
+      "name": "links"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#alerts",
+          "mode": "name"
+        },
+        "text": "=*{{ $('Split Out').item.json.fields.title }}*\n📌 *Agency:* {{ $('Split Out').item.json.fields.agency}}\n📅 *Deadline:* {{ $('Split Out').item.json.fields.deadline}}\n⭐ *Score:* {{ $('Split Out').item.json.fields.score}} • *Sugestion:* {{ $('Split Out').item.json.fields.auto_decision}}\n🛠️ *Service:* {{ $('Split Out').item.json.fields.service_line}} • *Effort:* {{ $('Split Out').item.json.fields.effort_hours}}h ({{ $('Split Out').item.json.fields.effort_bucket}})\n\n✔️ <{{$json.accept_url}}|Accept>\n❌ <{{$json.ignore_url}}|Ignore>",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1320,
+        -280
+      ],
+      "id": "2fcc58fc-43d0-4eb5-bfa7-c5b4464f707d",
+      "name": "Send alert",
+      "webhookId": "6fa24168-c7c5-4d07-9332-4db5c2c0c9a9",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "WvjDC7qGx7yI6LiO",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        920,
+        -300
+      ],
+      "id": "3648f2f3-b8ef-4237-bd45-0db193902fc9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        -280
+      ],
+      "id": "82f959a7-641c-4efe-9fb7-6113c181b2f6",
+      "name": "Wait",
+      "webhookId": "f301fa12-1c2a-41cd-874f-0bf415a5229a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "links": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send alert": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4eb88ecb-de03-4645-9db4-4c9b4f2059b7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c1d0e46fdeb2b72758a6a5bd5eecf2622ff8b84a8964c8e9687c6c05c9f474b5"
+  },
+  "id": "QxOqQJOgzKMWGUVs",
+  "tags": []
+}

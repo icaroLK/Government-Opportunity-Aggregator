@@ -23,7 +23,7 @@ services:
       - ./workflows:/workflows
     depends_on:
       - scraper
-    restart: unless-stopped
+    restart: always
 
   scraper:
     build: ./scrapers
@@ -42,4 +42,4 @@ services:
       - ./.coveragerc:/.coveragerc   # (so coverage omit rules work inside)
       - ./pytest.ini:/pytest.ini     # (so --cov-fail-under=70 etc. apply)
     command: tail -f /dev/null
-    restart: unless-stopped
+    restart: always
